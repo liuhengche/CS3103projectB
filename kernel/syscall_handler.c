@@ -463,6 +463,11 @@ int sys_object_write(int fd, void *data, int length, kernel_io_flags_t flags )
 	if(!is_valid_pointer(data,length)) return KERROR_INVALID_ADDRESS;
 
 	struct kobject *p = current->ktable[fd];
+	if (p->type == KOBJECT_NAMED_PIPE) {
+		struct named_pipe *np = p->data.named_pipe;
+		return named_pipe_write(np, data);
+
+	}
 	return kobject_write(p, data, length, flags);
 }
 

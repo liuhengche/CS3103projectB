@@ -16,6 +16,7 @@ struct named_pipe {
     struct fs_dirent *file;
     char *mes;
     
+    
 };
 
 static struct named_pipe *named_pipes[10];
@@ -47,7 +48,7 @@ struct fs_dirent* create_file_at_path(char* full_path) {
     struct fs_dirent *file = fs_dirent_mkfile(dir, filename);
     if (!file) {
         // Handle error: the file could not be created
-        printf("Uh oh, the file could not be created");
+        //printf("Uh oh, the file could not be created");
         //return;
     }
     return file;
@@ -55,6 +56,10 @@ struct fs_dirent* create_file_at_path(char* full_path) {
     
 }
 
+int named_pipe_write(struct named_pipe *np, char *mes) {
+    strcpy(np->mes, mes);
+    return 0;
+}
 
 
 
