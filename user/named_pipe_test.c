@@ -2,58 +2,82 @@
 #include "library/string.h"
 #include "library/stdio.h"
 
-int senderProgram() {
-    printf("Hi! I am the sender.\n");
-    const char* fileName = "bin/named_pipe";
-    char buffer[] = "Hello World!\n";
+// int senderProgram() {
+//     printf("Hi! I am the sender.\n");
+//     const char* fileName = "bin/named_pipe";
+//     char buffer[] = "Hello World!\n";
 
-    int res = syscall_make_named_pipe(fileName);
-    int fd = syscall_open_named_pipe(fileName);
+//     int res = syscall_make_named_pipe(fileName);
+//     int fd = syscall_open_named_pipe(fileName);
 
-    syscall_object_write(fd, buffer, strlen(buffer),0);
+//     syscall_object_write(fd, buffer, strlen(buffer),0);
     
 
-    printf("I have sent the data!\n");
-    return 1;
-}
+//     printf("I have sent the data!\n");
+//     return 1;
+// }
 
-int receiverProgram() {
-    printf("Hi! I am the receiver.\n");
-    const char* fileName = "bin/named_pipe";
+// int receiverProgram() {
+//     printf("Hi! I am the receiver.\n");
+//     const char* fileName = "bin/named_pipe";
     
-    int res;
-    int fd = syscall_open_named_pipe(fileName);
-    if (fd >= 0) {
-        char buffer[20];
+//     int res;
+//     int fd = syscall_open_named_pipe(fileName);
+//     if (fd >= 0) {
+//         char buffer[20];
 
-        while((res = syscall_object_read(fd, buffer, 20, -1))==0) {
+//         res = syscall_object_read(fd, buffer, 20, 0);
+//         if (res > 0) {
+//             buffer[res] = '\0';
+//             printf("I have received the message! The message is: %s\n", buffer);
+//         } else {
+//             printf("Error in receiving the message!\n");
+//         }
+//         syscall_object_close(fd);
+//         printf("I have received the data!\n");
+//     }
+//     else {
+//         printf("Error in opening the named pipe!\n");
+//     }
+//     return 1;
+
+// }
+
+
+int main(int argc, char *argv[]) {
+    printf("This is the named pipe test program!\n");
+    const char* fileName = "bin/named_pipe";
+    int w = syscall_make_named_pipe(fileName);
+    int x = syscall_process_fork();
+    if (x) {
+        printf("I am the sender!\n");
+        char buf[] = "Hello World\n";
+        syscall_object_write(w, buf, strlen(buf), 0);
+        printf("I have sent the data!\n");
+        syscall_process_sleep(1000);
+    } else {
+        printf("I am the receiver!\n");
+        int r;
+        char buf[20];
+        while (!(r = syscall_object_read(w, buf, 20, 0))) {
             syscall_process_yield();
         }
-        if (res > 0) {
-            buffer[res] = '\0';
-            printf("I have received the message! The message is: %s\n", buffer);
-        } else {
-            printf("Error in receiving the message!\n");
-        }
-        syscall_object_close(fd);
-        printf("I have received the data!\n");
+        printf("I have received the message! The message is: %s\n", buf);
     }
-    else {
-        printf("Error in opening the named pipe!\n");
-    }
-    return 1;
+    return 0;
 
 }
 
 
-int main(int argc, char* argv[]) {
-    printf("This is the named pipe test program!\n");
+// int main(int argc, char* argv[]) {
+//     printf("This is the named pipe test program!\n");
+    
+    
+//     senderProgram();
+//     receiverProgram();
     
 
-    senderProgram();
-    receiverProgram();
+//     printf("Exiting named pipe test program!\n");
+//     return 1;
 
-    printf("Exiting named pipe test program!\n");
-    return 1;
-
-}
+// }
