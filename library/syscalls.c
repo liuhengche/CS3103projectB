@@ -108,6 +108,16 @@ int syscall_open_pipe()
 	return syscall(SYSCALL_OPEN_PIPE, 0, 0, 0, 0, 0);
 }
 
+int syscall_make_named_pipe(char * fname)
+{
+	return syscall(SYSCALL_MAKE_NAMED_PIPE, (uint32_t) fname, 0, 0, 0, 0);
+}
+
+int syscall_open_named_pipe(char * fname)
+{
+	return syscall(SYSCALL_OPEN_NAMED_PIPE, (uint32_t) fname, 0, 0, 0, 0);
+}
+
 int syscall_object_type(int fd)
 {
 	return syscall(SYSCALL_OBJECT_TYPE, fd, 0, 0, 0, 0);
