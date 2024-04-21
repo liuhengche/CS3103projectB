@@ -23,7 +23,7 @@ struct process *current = 0;
 struct list ready_list = { 0, 0 };
 struct list grave_list = { 0, 0 };
 struct list grave_watcher_list = { 0, 0 };	// parent processes are put here to wait for their children
-struct list priority_waiting_lis = { 0, 0 };
+struct list priority_waiting_list = { 0, 0 };
 struct process *process_table[PROCESS_MAX_PID] = { 0 };
 
 void process_init()
