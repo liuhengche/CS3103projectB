@@ -1,7 +1,7 @@
 #include "fs.h"
 #include "named_pipe.h"
 #include "kmalloc.h"
-
+#include "string.h"
 #include "process.h"
 #include "page.h"
 #include "kernel/types.h"
@@ -23,7 +23,7 @@ static int index = 0;
 
 void create_file_at_path(char* full_path) {
     // Find the last slash in the path
-    char* last_slash = strrchr(full_path, '/');
+    char* last_slash = strchr(full_path, '/');
     if (!last_slash) {
         // Handle error: the path does not include a directory
         return;
