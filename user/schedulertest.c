@@ -7,10 +7,10 @@ void create_process_priority(const char *exec, int priority){
     if(pid > 0) {
       printf("started process %d\n", pid); } 
     else {
-      printf("couldn't run %s: %s\n", argv[0],strerror(pid));}
+      printf("couldn't run %s: %s\n", exec,strerror(pid));}
     syscall_object_close(pfd);}
   else {
-    printf("couldn't find %s: %s\n", argv[0],strerror(pfd));
+    printf("couldn't find %s: %s\n", exec,strerror(pfd));
   }
 }
 
