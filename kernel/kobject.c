@@ -14,6 +14,7 @@
 #include "window.h"
 #include "console.h"
 #include "pipe.h"
+#include "named_pipe.h"
 
 #include "kernel/error.h"
 
@@ -81,6 +82,14 @@ struct kobject *kobject_addref(struct kobject *k)
 	return k;
 }
 
+struct kobject *kobject_create_named_pipe(struct named_pipe *np)
+{
+	struct kobject *k = kobject_create();
+	k->type = KOBJECT_NAMED_PIPE;
+	k->data.named_pipe = np;
+	return k;
+}
+
 struct kobject * kobject_copy( struct kobject *ksrc )
 {
 	struct kobject *kdst = kobject_create();
@@ -114,6 +123,9 @@ struct kobject * kobject_copy( struct kobject *ksrc )
 		break;
 	case KOBJECT_PIPE:
 		pipe_addref(ksrc->data.pipe);
+		break;
+	case KOBJECT_NAMED_PIPE:
+		named_pipe_addref(ksrc->data.named_pipe);
 		break;
 	}
 
@@ -211,6 +223,14 @@ int kobject_read(struct kobject *kobject, void *buffer, int size, kernel_io_flag
 			actual = console_read(kobject->data.console,buffer,size);
 		}
 
+		break;
+
+	case KOBJECT_NAMED_PIPE:
+		if(flags&KERNEL_IO_NONBLOCK) {
+			actual = named_pipe_read_nonblock(kobject->data.named_pipe, buffer, size);
+		} else {
+			actual = named_pipe_read(kobject->data.named_pipe, buffer, size);
+		}
 		break;
 	default:
 		actual = 0;

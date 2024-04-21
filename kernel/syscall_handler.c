@@ -398,6 +398,27 @@ int sys_open_pipe()
 	return fd;
 }
 
+int sys_make_named_pipe(char* fname) {
+	struct named_pipe *np = named_pipe_create(fname);
+	if(!np) {
+		return KERROR_NOT_FOUND;
+	}
+	return 0;
+}
+
+int sys_open_named_pipe(char* fname) {
+	int fd = process_available_fd(current);
+	if(fd < 0) {
+		return KERROR_NOT_FOUND;
+	}
+	struct named_pipe *np = named_pipe_open(fname);
+	if(!np) {
+		return KERROR_NOT_FOUND;
+	}
+	current->ktable[fd] = kobject_create_named_pipe(np);
+	return fd;
+}
+
 int sys_object_type(int fd)
 {
 	if(!is_valid_object(fd)) return KERROR_INVALID_OBJECT;
@@ -551,6 +572,8 @@ int sys_device_driver_stats(const char * name, struct device_driver_stats * stat
 	return 0;
 }
 
+
+
 int32_t syscall_handler(syscall_t n, uint32_t a, uint32_t b, uint32_t c, uint32_t d, uint32_t e)
 {
 	if((n < MAX_SYSCALL) && current) {
@@ -597,6 +620,10 @@ int32_t syscall_handler(syscall_t n, uint32_t a, uint32_t b, uint32_t c, uint32_
 		return sys_open_console(a);
 	case SYSCALL_OPEN_PIPE:
 		return sys_open_pipe();
+	case SYSCALL_MAKE_NAMED_PIPE:
+		return sys_make_named_pipe((char*)a);
+	case SYSCALL_OPEN_NAMED_PIPE:
+		return sys_open_named_pipe((char*)a);
 	case SYSCALL_OBJECT_TYPE:
 		return sys_object_type(a);
 	case SYSCALL_OBJECT_COPY:
