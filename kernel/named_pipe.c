@@ -1,7 +1,7 @@
 #include "fs.h"
 #include "named_pipe.h"
 #include "kmalloc.h"
-#include "errno.h"
+
 #include "process.h"
 #include "page.h"
 #include "kernel/types.h"
