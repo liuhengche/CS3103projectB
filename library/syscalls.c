@@ -33,6 +33,11 @@ int syscall_process_wrun(int fd, int argc, const char **argv, int * fds, int fd_
 	return syscall(SYSCALL_PROCESS_WRUN, fd, argc, (uint32_t) argv, (uint32_t) fds, fd_len);
 }
 
+int syscall_process_prun(int fd, int argc, const char **argv, int priority)
+{
+	return syscall(SYSCALL_PROCESS_PRUN, fd, argc, (uint32_t) argv, priority, 0);
+}
+
 int syscall_process_fork()
 {
 	return syscall(SYSCALL_PROCESS_FORK, 0, 0, 0, 0, 0);
@@ -166,6 +171,11 @@ int syscall_object_size(int fd, int *dims, int n)
 int syscall_object_max()
 {
 	return syscall(SYSCALL_OBJECT_MAX, 0, 0, 0, 0, 0);
+}
+
+int syscall_prun_all()
+{
+	return syscall(SYSCALL_PRUN_ALL, 0, 0, 0, 0, 0);
 }
 
 int syscall_system_stats(struct system_stats *s)
