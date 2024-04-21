@@ -23,6 +23,7 @@ struct process *current = 0;
 struct list ready_list = { 0, 0 };
 struct list grave_list = { 0, 0 };
 struct list grave_watcher_list = { 0, 0 };	// parent processes are put here to wait for their children
+struct list priority_waiting_lis = { 0, 0 };
 struct process *process_table[PROCESS_MAX_PID] = { 0 };
 
 void process_init()
@@ -163,6 +164,16 @@ int process_data_size_set(struct process *p, unsigned size)
 	return 0;
 }
 
+void process_run_waiting_process()
+{
+	struct process *p;
+	while ((p = (struct process *)list_pop_head(&priority_waiting_list)))
+	{
+		printf("running the process having pid: %d, priority: %d\n", p->pid, p->node.priority);
+		list_push_tail(&ready_list, &p->node);
+	}
+}
+
 int process_stack_size_set(struct process *p, unsigned size)
 {
 	// XXX check valid ranges
@@ -241,6 +252,12 @@ void process_launch(struct process *p)
 {
 	list_push_tail(&ready_list, &p->node);
 }
+
+void process_priority_launch(struct process *p)
+{
+	list_push_priority(&priority_waiting_list, &p->node, priority);
+}
+
 
 static void process_switch(int newstate)
 {
