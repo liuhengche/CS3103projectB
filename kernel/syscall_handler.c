@@ -454,6 +454,12 @@ int sys_object_read(int fd, void *data, int length, kernel_io_flags_t flags )
 	if(!is_valid_pointer(data,length)) return KERROR_INVALID_ADDRESS;
 
 	struct kobject *p = current->ktable[fd];
+	if (p->type == KOBJECT_NAMED_PIPE) {
+		struct named_pipe *np = p->data.named_pipe;
+		strcpy(data, np->mes);
+		return named_pipe_read(np, data);
+
+	}
 	return kobject_read(p, data, length, flags);
 }
 

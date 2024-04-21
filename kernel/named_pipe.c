@@ -78,7 +78,7 @@ struct named_pipe *named_pipe_create(char *fname) {
     struct fs_dirent *file = fs_dirent_mkfile(dir, "named_pipe");
     if (!file) {
         // Handle error: the file could not be created
-        printf("Uh oh, the file could not be created");
+        //printf("Uh oh, the file could not be created");
     } 
 
     struct named_pipe *np = kmalloc(sizeof(struct named_pipe));
