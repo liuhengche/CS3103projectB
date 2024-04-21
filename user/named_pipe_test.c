@@ -21,11 +21,26 @@ int receiverProgram() {
     printf("Hi! I am the receiver.\n");
     const char* fileName = "bin/named_pipe";
     
+    int res;
     int fd = syscall_open_named_pipe(fileName);
-    char buffer[20];
+    if (fd >= 0) {
+        char buffer[20];
 
-    syscall_object_read(fd, buffer, 20, 0);
-    printf("I have received the message! The message is: %s\n", buffer);
+        while((res = syscall_object_read(fd, buffer, 20, -1))==0) {
+            syscall_process_yield();
+        }
+        if (res > 0) {
+            buffer[res] = '\0';
+            printf("I have received the message! The message is: %s\n", buffer);
+        } else {
+            printf("Error in receiving the message!\n");
+        }
+        syscall_object_close(fd);
+        printf("I have received the data!\n");
+    }
+    else {
+        printf("Error in opening the named pipe!\n");
+    }
     return 1;
 
 }

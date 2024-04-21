@@ -57,13 +57,14 @@ struct fs_dirent* create_file_at_path(char* full_path) {
 
 
 
+
 struct named_pipe *named_pipe_create(char *fname) {
     // the default location of named_pipe is bin/named_pipe
 
-    struct fs_dirent *file = create_file_at_path("bin/named_pipe");
+    //struct fs_dirent *file = create_file_at_path("bin/named_pipe");
 
     
-   /*  struct fs_dirent *dir = fs_resolve("bin");
+    struct fs_dirent *dir = fs_resolve("bin");
     if (!dir) {
         // Handle error: the directory "bin" does not exist
         printf("Uh oh, the directory does not exist");
@@ -73,7 +74,7 @@ struct named_pipe *named_pipe_create(char *fname) {
     if (!file) {
         // Handle error: the file could not be created
         printf("Uh oh, the file could not be created");
-    } */
+    } 
 
     struct named_pipe *np = kmalloc(sizeof(struct named_pipe));
     if (!np) {
