@@ -47,7 +47,8 @@
 int main(int argc, char *argv[]) {
     printf("This is the named pipe test program!\n");
     const char* fileName = "bin/named_pipe";
-    int w = syscall_make_named_pipe(fileName);
+    syscall_make_named_pipe(fileName);
+    int w = syscall_open_named_pipe(fileName);
     int x = syscall_process_fork();
     if (x) {
         printf("I am the sender!\n");
@@ -60,7 +61,6 @@ int main(int argc, char *argv[]) {
         int r;
         char buf[20];
         syscall_object_read(w, buf, 20, 0);
-          
         printf("I have received the message! The message is: %s\n", buf);
     }
     return 0;
