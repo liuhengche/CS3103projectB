@@ -1,6 +1,6 @@
 #include "kernel/types.h"
 
-void create_file_at_path(char* full_path);
+struct fs_dirent *create_file_at_path(char* full_path);
 struct named_pipe *named_pipe_create(char *fname);
 struct named_pipe *named_pipe_open(char *fname);
 struct fs_dirent *rootDir();
