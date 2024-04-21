@@ -28,6 +28,7 @@ See the file LICENSE for details.
 #include "window.h"
 #include "is_valid.h"
 #include "bcache.h"
+#include "named_pipe.h"
 
 /*
 syscall_handler() is responsible for decoding system calls
