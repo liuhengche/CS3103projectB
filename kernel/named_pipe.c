@@ -21,12 +21,12 @@ struct named_pipe {
 static struct named_pipe *named_pipes[10];
 static int index = 0;
 
-void create_file_at_path(char* full_path) {
+struct fs_dirent* create_file_at_path(char* full_path) {
     // Find the last slash in the path
     char* last_slash = strchr(full_path, '/');
     if (!last_slash) {
         // Handle error: the path does not include a directory
-        return;
+        printf("Uh oh, the path does not include a directory");
     }
 
     // Temporarily replace the last slash with a null terminator to split the path
@@ -36,7 +36,7 @@ void create_file_at_path(char* full_path) {
     struct fs_dirent *dir = fs_resolve(full_path);
     if (!dir) {
         // Handle error: the directory does not exist
-        return;
+        printf("Uh oh, the directory does not exist");
     }
 
     // Restore the slash in the path and get the filename
@@ -47,19 +47,23 @@ void create_file_at_path(char* full_path) {
     struct fs_dirent *file = fs_dirent_mkfile(dir, filename);
     if (!file) {
         // Handle error: the file could not be created
-        return;
+        printf("Uh oh, the file could not be created");
+        //return;
     }
-
+    return file;
     // Close the directory and file when you're done with them
-    fs_dirent_close(dir);
-    fs_dirent_close(file);
+    
 }
 
 
 
 struct named_pipe *named_pipe_create(char *fname) {
     // the default location of named_pipe is bin/named_pipe
-    struct fs_dirent *dir = fs_resolve("bin");
+
+    struct fs_dirent *file = create_file_at_path("bin/named_pipe");
+
+    
+   /*  struct fs_dirent *dir = fs_resolve("bin");
     if (!dir) {
         // Handle error: the directory "bin" does not exist
         printf("Uh oh, the directory does not exist");
@@ -69,7 +73,7 @@ struct named_pipe *named_pipe_create(char *fname) {
     if (!file) {
         // Handle error: the file could not be created
         printf("Uh oh, the file could not be created");
-    }
+    } */
 
     struct named_pipe *np = kmalloc(sizeof(struct named_pipe));
     if (!np) {
