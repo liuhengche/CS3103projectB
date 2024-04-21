@@ -253,9 +253,9 @@ void process_launch(struct process *p)
 	list_push_tail(&ready_list, &p->node);
 }
 
-void process_priority_launch(struct process *p)
+void process_priority_launch(struct process *p, int pri)
 {
-	list_push_priority(&priority_waiting_list, &p->node, priority);
+	list_push_priority(&priority_waiting_list, &p->node, pri);
 }
 
 
