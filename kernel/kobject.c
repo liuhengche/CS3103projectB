@@ -124,7 +124,7 @@ struct kobject * kobject_copy( struct kobject *ksrc )
 		pipe_addref(ksrc->data.pipe);
 		break;
 	case KOBJECT_NAMED_PIPE:
-		named_pipe_addref(ksrc->data.named_pipe);
+		//named_pipe_addref(ksrc->data.named_pipe);
 		break;
 	}
 
@@ -224,13 +224,13 @@ int kobject_read(struct kobject *kobject, void *buffer, int size, kernel_io_flag
 
 		break;
 
-	case KOBJECT_NAMED_PIPE:
-		if(flags&KERNEL_IO_NONBLOCK) {
-			actual = named_pipe_read_nonblock(kobject->data.named_pipe, buffer, size);
-		} else {
-			actual = named_pipe_read(kobject->data.named_pipe, buffer, size);
-		}
-		break;
+	// case KOBJECT_NAMED_PIPE:
+	// 	if(flags&KERNEL_IO_NONBLOCK) {
+	// 		actual = named_pipe_read_nonblock(kobject->data.named_pipe, buffer, size);
+	// 	} else {
+	// 		actual = named_pipe_read(kobject->data.named_pipe, buffer, size);
+	// 	}
+	// 	break;
 	default:
 		actual = 0;
 		break;
