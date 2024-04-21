@@ -6,6 +6,7 @@ See the file LICENSE for details.
 
 #ifndef SYSCALL_HANDLER_H
 #define SYSCALL_HANDLER_H
+#include "named_pipe.h"
 
 /* Only kernel/syscall.handlers invoked by other parts of kernel code should be declared here. */
 
