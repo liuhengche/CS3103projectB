@@ -59,9 +59,8 @@ int main(int argc, char *argv[]) {
         printf("I am the receiver!\n");
         int r;
         char buf[20];
-        while (!(r = syscall_object_read(w, buf, 20, 0))) {
-            syscall_process_yield();
-        }
+        syscall_object_read(w, buf, 20, 0);
+          
         printf("I have received the message! The message is: %s\n", buf);
     }
     return 0;
