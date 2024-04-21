@@ -15,7 +15,7 @@
 #include "console.h"
 #include "pipe.h"
 #include "named_pipe.h"
-
+#include "named_pipe.c"
 #include "kernel/error.h"
 
 static struct kobject *kobject_create()
