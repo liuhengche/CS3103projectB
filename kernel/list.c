@@ -40,10 +40,11 @@ void list_push_priority(struct list *list, struct list_node *node, int pri)
 	int i = 0;
 	if(!list->head) {
 		list_push_head(list, node);
+		node->priority = pri;
 		return;
 	}
 	for(n = list->head; n; n = n->next) {
-		if(pri > n->priority || i > 5000) {
+		if(pri < n->priority || i > 5000) {
 			node->next = n;
 			node->prev = n->prev;
 			node->priority = pri;

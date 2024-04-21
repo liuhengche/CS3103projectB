@@ -198,6 +198,60 @@ int sys_process_wrun( int fd, int argc, const char **argv, int *fds, int fd_len)
 	return p->pid;
 }
 
+int sys_process_prun( int fd, int argc, const char **argv, int pri)
+{
+	if(!is_valid_object_type(fd,KOBJECT_FILE)) return KERROR_INVALID_OBJECT;
+
+	struct kobject *k = current->ktable[fd];
+
+	/* Copy argv into kernel memory. */
+	char **copy_argv = argv_copy(argc, argv);
+
+	/* Create the child process */
+	struct process *p = process_create();
+	process_inherit(current, p);
+
+	/* SWITCH TO ADDRESS SPACE OF CHILD PROCESS */
+	struct pagetable *old_pagetable = current->pagetable;
+	current->pagetable = p->pagetable;
+	pagetable_load(p->pagetable);
+
+	/* Attempt to load the program image. */
+	addr_t entry;
+	int r = elf_load(p, k->data.file, &entry);
+	if(r >= 0) {
+		/* If load succeeded, reset stack and pass arguments */
+		process_stack_reset(p, PAGE_SIZE);
+		process_kstack_reset(p, entry);
+		process_pass_arguments(p, argc, copy_argv);
+	}
+
+	/* SWITCH BACK TO ADDRESS SPACE OF PARENT PROCESS */
+	current->pagetable = old_pagetable;
+	pagetable_load(old_pagetable);
+
+	/* Delete the argument and path copies. */
+	argv_delete(argc, copy_argv);
+
+	/* If any error happened, return in the context of the parent */
+	if(r < 0) {
+		if(r == KERROR_EXECUTION_FAILED) {
+			process_delete(p);
+		}
+		return r;
+	}
+
+	/* Otherwise, launch the new child process. */
+	process_priority_launch(p, pri);
+	return p->pid;
+}
+
+int sys_prun_all()
+{
+	process_run_waiting_process();
+	return 0;
+}
+
 int sys_process_exec( int fd, int argc, const char **argv)
 {
 	if(!is_valid_object_type(fd,KOBJECT_FILE)) return KERROR_INVALID_OBJECT;
@@ -602,6 +656,10 @@ int32_t syscall_handler(syscall_t n, uint32_t a, uint32_t b, uint32_t c, uint32_
 		return sys_process_run(a, b, (const char **)c);
 	case SYSCALL_PROCESS_WRUN:
 		return sys_process_wrun(a, b, (const char **) c, (int *) d, e);
+	case SYSCALL_PROCESS_PRUN:
+		return sys_process_prun(a, b, (const char **) c, d);
+	case SYSCALL_PRUN_ALL:
+		return sys_prun_all();
 	case SYSCALL_PROCESS_FORK:
 		return sys_process_fork();
 	case SYSCALL_PROCESS_EXEC:
