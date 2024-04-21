@@ -1,3 +1,5 @@
+#include "library/syscalls.h"
+#include "library/stdio.h"
 void runForSeconds(int seconds) 
 {
   unsigned int startTime; // seconds syscall_system_time(&startTime);
