@@ -621,6 +621,10 @@ int32_t syscall_handler(syscall_t n, uint32_t a, uint32_t b, uint32_t c, uint32_
 		return sys_process_run(a, b, (const char **)c);
 	case SYSCALL_PROCESS_WRUN:
 		return sys_process_wrun(a, b, (const char **) c, (int *) d, e);
+	case SYSCALL_PROCESS_PRUN:
+		return sys_process_prun(a, b, (const char **) c, d);
+	case SYSCALL_PRUN_ALL:
+		return sys_prun_all();
 	case SYSCALL_PROCESS_FORK:
 		return sys_process_fork();
 	case SYSCALL_PROCESS_EXEC:
