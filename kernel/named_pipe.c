@@ -61,6 +61,11 @@ int named_pipe_write(struct named_pipe *np, char *mes) {
     return 0;
 }
 
+int named_pipe_read(struct named_pipe *np, char *mes) {
+    strcpy(mes, np->mes);
+    return 0;
+}
+
 
 
 struct named_pipe *named_pipe_create(char *fname) {
